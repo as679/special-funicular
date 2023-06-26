@@ -13,7 +13,7 @@ pip3 install kubernetes boto3
 # Install K3S
 curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION=v1.24.13+k3s1 K3S_KUBECONFIG_MODE="644" sh -
 sleep 60
-KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
 crictl img | grep -v IMAGE | awk '{print $1":"$2}' > /tmp/k3s.lst
 cat /tmp/k3s.lst > /tmp/total.lst
 
@@ -50,6 +50,7 @@ python3 /tmp/repo/update_dns.py --ip $ip --name $keycloak_domain
 sed -i "s/KEYCLOAK/$keycloak_domain/g" /tmp/repo/cqai-values.yml
 sed -i "s/DOMAIN/$domain/g" /tmp/repo/cqai-values.yml
 helm upgrade --install cqai cequence/cequence-asp --namespace cqai-system --values /tmp/repo/cqai-values.yml --skip-crds --version $CQAI
+sleep 60
 crictl img | grep -v IMAGE | awk '{print $1":"$2}' | grep -vf /tmp/total.lst > /tmp/cequence.lst
 cat /tmp/cequence.lst >> /tmp/total.lst
 

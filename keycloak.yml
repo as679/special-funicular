@@ -20,8 +20,8 @@ metadata:
   name: keycloak-auth
   namespace: cqai-system
 data:
-  admin-password: djNsMGNpdHk=
-  username: a2V5Y2xvYWs=
+  admin-password: djNsMGNpdHkK
+  username: a2V5Y2xvYWsK
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -87,7 +87,6 @@ spec:
         name: themes
       - emptyDir: {}
         name: providers
-
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress

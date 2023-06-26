@@ -14,7 +14,7 @@ apiGateway:
   enableJmxPort: true
   enabled: true
 authentication:
-  existingSecret: keycloak_auth
+  existingSecret: keycloak-auth
   domain: KEYCLOAK
   basepath: ""
   admin:
