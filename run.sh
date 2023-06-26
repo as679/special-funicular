@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+. /tmp/variables
+
 domain=testing.local
 keycloak_domain=keycloak.${domain}
 nic=`ip r | grep default | cut -d' ' -f5`
@@ -22,24 +24,24 @@ helm repo add strimzi https://strimzi.io/charts/
 helm repo add elastic https://helm.elastic.co
 helm repo add prometheus https://prometheus-community.github.io/helm-charts
 helm repo add cequence https://cequence.gitlab.io/helm-charts
-helm install strimzi strimzi/strimzi-kafka-operator -n kafka-system --create-namespace --set watchAnyNamespace=true --version ${KAFKA}
-helm install eck elastic/eck-operator -n elastic-system --create-namespace --version ${ECK}
+helm install strimzi strimzi/strimzi-kafka-operator -n kafka-system --create-namespace --set watchAnyNamespace=true --version $KAFKA
+helm install eck elastic/eck-operator -n elastic-system --create-namespace --version $ECK
 sleep 10
 sudo crictl img | grep -v IMAGE | awk '{print $1":"$2}' | grep -vf /tmp/k3s.lst > /tmp/operators.lst
 cat /tmp/operators.lst >> /tmp/total.lst
 
 # Prometheus
-helm install monitoring prometheus/kube-prometheus-stack -n monitoring --create-namespace --version ${MONITORING}
+helm install monitoring prometheus/kube-prometheus-stack -n monitoring --create-namespace --version $MONITORING
 sleep 10
 crictl img | grep -v IMAGE | awk '{print $1":"$2}' | grep -vf /tmp/total.lst > /tmp/prometheus.lst
 cat /tmp/prometheus.lst >> /tmp/total.lst
 
 # Namespace and keycloak
 kubectl create ns cqai-system
-kubectl create secret docker-registry regcred --docker-server=registry.gitlab.com --docker-username=${REGISTRY_USER} --docker-password=$REGISTRY_PASS --n cqai-system
-python3 update_dns.py --ip ${ip} --name ${keycloak_domain}
-sed -s "s/KEYCLOAK/${keycloak_domain}/g" keycloak.yml
-kubectl apply -f keycloak.yml
+kubectl create secret docker-registry regcred --docker-server=registry.gitlab.com --docker-username=$REGISTRY_USER --docker-password=REGISTRY_PASS --n cqai-system
+python3 /tmp/repo/update_dns.py --ip $ip --name $keycloak_domain
+sed -s "s/KEYCLOAK/${keycloak_domain}/g" /tmp/repo/keycloak.yml
+kubectl apply -f /tmp/repo/keycloak.yml
 sleep 10
 crictl img | grep -v IMAGE | awk '{print $1":"$2}' | grep -vf /tmp/total.lst > /tmp/keycloak.lst
 cat /tmp/keycloak.lst >> /tmp/total.lst
