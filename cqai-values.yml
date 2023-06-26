@@ -1,0 +1,187 @@
+apiEdge:
+  tlsRejectUnauthorized: true
+  ignoredFileExtensions: "css, js, png, ico, jpg, gif, ttf, eot, woff, woff2, txt, svg, html, mp4"
+  ignoredContentTypes: "text/html, text/javascript, text/css, text/plain, image/gif, image/png, image/jpeg, image/svg, font/woff2, application/font-sfnt, image/svg+xml, application/vnd.ms-fontobject, application/javascript, application/x-www-form-urlencoded, video/mp4"
+  keepContentQueryParamCount: "2"
+  resources:
+    requests:
+      memory: "1500Mi"
+      cpu: "1000m"
+    limits:
+      memory: "1500Mi"
+      cpu: "1000m"
+apiGateway:
+  enableJmxPort: true
+  enabled: true
+authentication:
+  existingSecret: keycloak_auth
+  domain: KEYCLOAK
+  basepath: ""
+  admin:
+    username: "keycloak"
+    password: "v3l0city"
+bff:
+  enableJmxPort: true
+  resources:
+    requests:
+      memory: "2000Mi"
+      cpu: "1000m"
+    limits:
+      memory: "2000Mi"
+      cpu: "1000m"
+componentConfiguration:
+  enabled: true
+  resources:
+    requests:
+      memory: "3000Mi"
+      cpu: "1000m"
+    limits:
+      memory: "3000Mi"
+      cpu: "1000m"
+  jvmMaxDirectMemorySize: "512m"
+  springMaxFileSize: "2MB"
+cqai:
+  enabled: true
+  botAnalyzer:
+    disabledUniqueCounts: "IP_SOURCEFINGERPRINT__WELL_KNOWN_BROWSER,ORGANIZATION_SOURCEFINGERPRINT__WELL_KNOWN_BROWSER,IP_SOURCEFINGERPRINT__URI_QUERYPARAMS,SOURCEFINGERPRINT__USERNAME,SOURCEFINGERPRINT__USERAGENT"
+    enabled: true
+    statsEnabled: false
+  elasticsearchInit:
+    indices:
+      appfirewall:
+        shards: 1
+      mitigator:
+        shards: 1
+      polygraph:
+        shards: 1
+      sensorTrafficStats:
+        shards: 1
+      trafficStats:
+        shards: 1
+  kafkaCluster:
+    kafkaConnect:
+      connectors:
+        sensor:
+          hourlyIndex: true
+        discovery:
+          hourlyIndex: true
+        mitigator:
+          hourlyIndex: true
+        appFirewall:
+          hourlyIndex: true
+        trafficStats:
+          hourlyIndex: true
+  trafficStats:
+    resources:
+      requests:
+        memory: "2000Mi"
+      limits:
+        memory: "4000Mi"
+defenderConfiguration:
+  enabled: true
+elasticsearch:
+  nodes: 1
+  storage: 300Gi
+  javaOpts: "-Xms4g -Xmx4g"
+  pod:
+    tolerations:
+    - effect: NoSchedule
+      key: datastore
+      value: 'true'
+  resources:
+    requests:
+      memory: "7.5Gi"
+      cpu: "2000m"
+    limits:
+      memory: "7.5Gi"
+      cpu: "2000m"
+global:
+  feature:
+    apiTesting:
+      enabled: true
+  ingress:
+    class: traefik
+  hosts:
+    domain: DOMAIN
+  imagePullSecrets:
+    - name: regcred
+  serviceMonitor:
+    enabled: true
+    labels:
+      release: monitoring
+  hpa:
+    enabled: false
+integration:
+  enabled: true
+  executor:
+    resources:
+      requests:
+        memory: "1600Mi"
+        cpu: "800m"
+      limits:
+        memory: "1600Mi"
+        cpu: "800m"
+kafkaCluster:
+  kafka:
+    replicas: 1
+    resources:
+      requests:
+        memory: 3Gi
+        cpu: "1000m"
+      limits:
+        memory: 3Gi
+        cpu: "2000m"
+  kafkaConnect:
+    replicas: 1
+    heapSize: "2g"
+    resources:
+      requests:
+        memory: "4000Mi"
+        cpu: "1000m"
+      limits:
+        memory: "4000Mi"
+        cpu: "2000m"
+  zookeeper:
+    replicas: 1
+prometheus-elasticsearch-exporter:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+    labels:
+      release: monitoring
+sentinel:
+  enabled: true
+  summaryEnabled: true
+  elasticsearch:
+    indices:
+      resourceMetrics:
+        maxObjects: "75000"
+        shards: 1
+      riskEvents:
+        maxObjects: "75000"
+        shards: 1
+  resourceDictionary:
+    resources:
+      requests:
+        memory: "2000Mi"
+        cpu: "2000m"
+      limits:
+        memory: "2000Mi"
+        cpu: "3000m"
+  resourceDiscovery:
+    resources:
+      requests:
+        memory: "2000Mi"
+        cpu: "1000m"
+      limits:
+        memory: "2000Mi"
+        cpu: "2000m"
+  trafficAnalyzer:
+    discoveryAllowedResponseCodes: "200, 302, 403, 404, 503"
+    resources:
+      requests:
+        memory: "4000Mi"
+        cpu: "2000m"
+      limits:
+        memory: "4000Mi"
+        cpu: "2000m"
