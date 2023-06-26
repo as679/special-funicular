@@ -13,7 +13,7 @@ pip3 install kubernetes boto3
 # Install K3S
 curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION=v1.24.13+k3s1 K3S_KUBECONFIG_MODE="644" sh -
 sleep 60
-export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+KUBECONFIG=/etc/rancher/k3s/k3s.yaml
 crictl img | grep -v IMAGE | awk '{print $1":"$2}' > /tmp/k3s.lst
 cat /tmp/k3s.lst > /tmp/total.lst
 
@@ -39,8 +39,7 @@ cat /tmp/prometheus.lst >> /tmp/total.lst
 # Namespace and keycloak
 kubectl create ns cqai-system
 kubectl create secret docker-registry regcred --docker-server=registry.gitlab.com --docker-username=$REGISTRY_USER --docker-password=REGISTRY_PASS --n cqai-system
-python3 /tmp/repo/update_dns.py --ip $ip --name $keycloak_domain
-sed -s "s/KEYCLOAK/$keycloak_domain/g" /tmp/repo/keycloak.yml
+sed -i "s/KEYCLOAK/$keycloak_domain/g" /tmp/repo/keycloak.yml
 kubectl apply -f /tmp/repo/keycloak.yml
 sleep 10
 crictl img | grep -v IMAGE | awk '{print $1":"$2}' | grep -vf /tmp/total.lst > /tmp/keycloak.lst
