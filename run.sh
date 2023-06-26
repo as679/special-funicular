@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 . /tmp/variables
+. /tmp/config
 
 domain=testing.local
 keycloak_domain=keycloak.${domain}
