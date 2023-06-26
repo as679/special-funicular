@@ -96,7 +96,7 @@ metadata:
 spec:
   ingressClassName: traefik
   rules:
-  - host: KEYCLOAK
+  - host: KEYCLOAK_DOMAIN
     http:
       paths:
       - path: /
@@ -108,5 +108,5 @@ spec:
               number: 8080
   tls:
   - hosts:
-    - KEYCLOAK
+    - KEYCLOAK_DOMAIN
     secretName: keycloak-tls

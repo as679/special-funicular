@@ -15,7 +15,7 @@ apiGateway:
   enabled: true
 authentication:
   existingSecret: keycloak-auth
-  domain: KEYCLOAK
+  domain: KEYCLOAK_DOMAIN
   basepath: ""
   admin:
     username: "keycloak"

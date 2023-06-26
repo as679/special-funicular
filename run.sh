@@ -39,7 +39,7 @@ cat /tmp/prometheus.lst >> /tmp/total.lst
 # Namespace and keycloak
 kubectl create ns cqai-system
 kubectl create secret docker-registry regcred --docker-server=registry.gitlab.com --docker-username=$REGISTRY_USER --docker-password=$REGISTRY_PASS -n cqai-system
-sed -i "s/KEYCLOAK/$keycloak_domain/g" /tmp/repo/keycloak.yml
+sed -i "s/KEYCLOAK_DOMAIN/$keycloak_domain/g" /tmp/repo/keycloak.yml
 kubectl apply -f /tmp/repo/keycloak.yml
 sleep 30
 crictl img | grep -v IMAGE | awk '{print $1":"$2}' | grep -vf /tmp/total.lst > /tmp/keycloak.lst
@@ -47,7 +47,7 @@ cat /tmp/keycloak.lst >> /tmp/total.lst
 
 # Cequence
 python3 /tmp/repo/update_dns.py --ip $ip --name $keycloak_domain
-sed -i "s/KEYCLOAK/$keycloak_domain/g" /tmp/repo/cqai-values.yml
+sed -i "s/KEYCLOAK_DOMAIN/$keycloak_domain/g" /tmp/repo/cqai-values.yml
 sed -i "s/DOMAIN/$domain/g" /tmp/repo/cqai-values.yml
 helm upgrade --install cqai cequence/cequence-asp --namespace cqai-system --values /tmp/repo/cqai-values.yml --skip-crds --version $CQAI
 sleep 60
