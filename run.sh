@@ -55,8 +55,10 @@ crictl img | grep -v IMAGE | awk '{print $1":"$2}' | grep -vf /tmp/total.lst > /
 cat /tmp/cequence.lst >> /tmp/total.lst
 
 # Create tarfile and upload
-filename=/tmp/cequence-$CQAI-`date +%s`.tar.gz
-tar -zcvf $filename /tmp/*.lst
+filename=cequence-$CQAI-`date +%s`.tar.gz
+tar -zcvf /tmp/$filename /tmp/*.lst /tmp/variables
+aws s3 cp /tmp/$filename s3://image-dropbox/image_lst/$filename
 
 
 touch /tmp/i-ran
+sudo shutdown -h now
