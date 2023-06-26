@@ -7,7 +7,7 @@ keycloak_domain=keycloak.${domain}
 nic=`ip r | grep default | cut -d' ' -f5`
 ip=`ip addr show dev ${nic} | grep 'inet ' | awk '{print $2}' | cut -d/ -f1`
 
-apt install -y python3-pip unzip
+apt install -y python3-pip unzip jq
 pip3 install kubernetes boto3
 
 # Install K3S
@@ -50,9 +50,13 @@ python3 /tmp/repo/update_dns.py --ip $ip --name $keycloak_domain
 sed -i "s/KEYCLOAK_DOMAIN/$keycloak_domain/g" /tmp/repo/cqai-values.yml
 sed -i "s/DOMAIN/$domain/g" /tmp/repo/cqai-values.yml
 helm upgrade --install cqai cequence/cequence-asp --namespace cqai-system --values /tmp/repo/cqai-values.yml --skip-crds --version $CQAI
-sleep 60
+bash /tmp/repo/wait_for_it.sh
 crictl img | grep -v IMAGE | awk '{print $1":"$2}' | grep -vf /tmp/total.lst > /tmp/cequence.lst
 cat /tmp/cequence.lst >> /tmp/total.lst
+
+# Create tarfile and upload
+filename=/tmp/cequence-$CQAI-`date +%s`.tar.gz
+tar -zcvf $filename /tmp/*.lst
 
 
 touch /tmp/i-ran
