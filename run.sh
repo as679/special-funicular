@@ -40,7 +40,7 @@ cat /tmp/prometheus.lst >> /tmp/total.lst
 kubectl create ns cqai-system
 kubectl create secret docker-registry regcred --docker-server=registry.gitlab.com --docker-username=$REGISTRY_USER --docker-password=REGISTRY_PASS --n cqai-system
 python3 /tmp/repo/update_dns.py --ip $ip --name $keycloak_domain
-sed -s "s/KEYCLOAK/${keycloak_domain}/g" /tmp/repo/keycloak.yml
+sed -s "s/KEYCLOAK/$keycloak_domain/g" /tmp/repo/keycloak.yml
 kubectl apply -f /tmp/repo/keycloak.yml
 sleep 10
 crictl img | grep -v IMAGE | awk '{print $1":"$2}' | grep -vf /tmp/total.lst > /tmp/keycloak.lst
