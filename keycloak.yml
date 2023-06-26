@@ -14,14 +14,14 @@ spec:
     app: keycloak
 ---
 apiVersion: v1
+data:
+  admin-password: djNsMGNpdHk=
+  username: a2V5Y2xvYWs=
 kind: Secret
-type: Opaque
 metadata:
   name: keycloak-auth
   namespace: cqai-system
-data:
-  admin-password: djNsMGNpdHkK
-  username: a2V5Y2xvYWsK
+type: Opaque
 ---
 apiVersion: apps/v1
 kind: Deployment
